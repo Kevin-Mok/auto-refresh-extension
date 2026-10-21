@@ -1,0 +1,22 @@
+:root { color-scheme:dark; font:16px/1.65 "Segoe UI",system-ui,sans-serif; background:#171c1d; color:#eaf0ef; --muted:#aebfbd; --line:#344041; --accent:#72deca; }
+* { box-sizing:border-box; }
+body { margin:0; }
+a { color:var(--accent); text-underline-offset:3px; }
+a:hover { text-decoration-thickness:2px; }
+:focus-visible { outline:3px solid #a3f4e2; outline-offset:4px; }
+::selection { background:#72deca; color:#112421; }
+.skip { position:absolute; top:-80px; left:16px; padding:8px 12px; background:#222b2c; }
+.skip:focus { top:8px; }
+header,main,footer { width:min(100% - 40px,740px); margin-inline:auto; }
+header { padding-block:26px; border-bottom:1px solid var(--line); display:flex; flex-wrap:wrap; align-items:center; gap:16px 24px; }
+.brand { display:inline-flex; gap:12px; align-items:center; color:inherit; text-decoration:none; font-size:15px; font-weight:700; }
+nav { display:flex; flex-wrap:wrap; gap:18px; margin-left:auto; font-size:14px; }
+main { padding-block:44px 36px; overflow-wrap:anywhere; }
+h1 { margin:0 0 16px; font-size:36px; line-height:1.2; letter-spacing:-.025em; }
+h2 { margin:32px 0 10px; font-size:21px; line-height:1.35; }
+p { margin:0 0 16px; }
+li { margin-block:8px; }
+.intro { color:var(--muted); font-size:18px; }
+.meta,footer { color:var(--muted); font-size:13px; }
+footer { border-top:1px solid var(--line); padding-block:20px 32px; }
+@media(max-width:480px) { header,main,footer { width:calc(100% - 32px); } nav { margin-left:0; width:100%; } main { padding-top:30px; } h1 { font-size:30px; } }

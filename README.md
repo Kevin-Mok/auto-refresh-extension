@@ -6,7 +6,7 @@ A local Chrome extension that remembers an exact page's refresh interval. Set it
 
 Manifest V3 runs the background work on demand. Bundled HTML/CSS/JavaScript keeps the popup local and installable without a build. Chrome local/session storage separates remembered page rules from temporary tab state; alarms and isolated document timers cover long and short intervals. Node’s built-in test runner verifies state transitions without dependencies. No runtime packages, account, server, analytics or cloud sync.
 
-[Verification evidence](docs/verification.md) · [Manual smoke checks](docs/smoke-tests.md) · [Implementation plan](plans/remembered-page-refresh.md)
+[Verification evidence](docs/verification.md) · [Manual smoke checks](docs/smoke-tests.md) · [Implementation plan](plans/remembered-page-refresh.md) · [Store publishing](docs/chrome-web-store-release.md)
 
 ## Install
 
@@ -56,6 +56,14 @@ Node 22 or later runs the dependency-free state tests with `npm test`. Tests inc
 `npm run demo` starts a local page at port 4317 and prints the selected URL. If occupied, it chooses another free port without stopping the existing listener. It prints elapsed activity every 15 seconds. `node scripts/demo-server.js --plain` uses ASCII status output. The page shows a server timestamp and full-navigation/SPA controls for manual reload checks. Stop the server with Ctrl+C.
 
 For automated browser checks, provide an installed Playwright module and an extension-capable Chromium binary to `node scripts/browser-check.js --playwright /absolute/path/to/playwright/index.mjs --chromium /absolute/path/to/chrome`. Alternatively install Playwright as a local development tool and omit `--playwright`; no runtime dependency is added to the extension. `--plain` removes decorative status glyphs; `--details` shows raw failure diagnostics and `--help` lists the invocation. The harness uses a temporary browser profile, local server and disposable extension copy with loopback host access pregranted (headless Chrome cannot accept the native permission prompt). Native allow/deny/revoke remains a manual check against the original manifest. It cleans up its profile/copy/server and saves an ignored screenshot under `output/playwright/`. See [verification evidence](docs/verification.md) and [manual smoke checks](docs/smoke-tests.md) for actual coverage and remaining checks.
+
+## Chrome Web Store publishing
+
+The [release guide](docs/chrome-web-store-release.md) contains the remaining account/dashboard steps. The [listing kit](store-assets/listing.md) includes store copy, every permission justification, local URL/data disclosures and reviewer instructions. Public [Help](https://kevin-mok.github.io/auto-refresh-extension/help.html) and [Privacy](https://kevin-mok.github.io/auto-refresh-extension/privacy.html) pages are bundled and prepared for GitHub Pages; their activation receipt is recorded separately from Web Store approval. No store listing URL or approval is claimed yet.
+
+Run `python3 scripts/release.py package` to create `artifacts/auto-refresh-cache-1.0.0.zip` and a validated unpacked folder beside it. `python3 scripts/release.py inspect artifacts/auto-refresh-cache-1.0.0.zip` checks the exact 15-file runtime allowlist, dependencies and icon sizes and prints its SHA256. Both subcommands support `--plain` for ASCII output and `--help`; no credentials, client ID or extra build dependency are needed. A changed existing install folder is protected from overwrite: move that generated folder aside after checking it or use a new release version. ZIPs and extracted candidates stay ignored.
+
+Upload the ZIP, padded 128px icon, 440×280 promo and 1280×800 screenshot using [the asset notes](store-assets/README.md). `node scripts/capture-store.mjs --help` describes repeatable genuine-popup capture; it accepts `--playwright`, `--chromium` and `--plain` like the browser harness. The source is publicly inspectable; this task does not select a license or claim a security audit. Native site permission acceptance and final publisher certifications remain manual.
 
 ## Project map
 

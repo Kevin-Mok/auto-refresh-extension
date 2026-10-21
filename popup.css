@@ -41,4 +41,5 @@ li p { margin:0 0 5px; font-size:11px; line-height:1.5; overflow-wrap:anywhere; 
 li button { font-size:11px; min-height:34px; padding:6px 10px; }
 .empty { color:#aebfbd; line-height:1.6; font-size:12px; }
 footer { color:#aebfbd; font-size:10px; line-height:1.65; margin-top:18px; }
+footer a { color:#72deca; text-underline-offset:2px; }
 [hidden] { display:none !important; }

@@ -3,6 +3,7 @@
   "name": "Auto Refresh Cache",
   "version": "1.0.0",
   "description": "Remember exact-page refresh intervals with independent tab timers and pauses.",
+  "homepage_url": "https://kevin-mok.github.io/auto-refresh-extension/help.html",
   "minimum_chrome_version": "120",
   "permissions": [
     "activeTab",

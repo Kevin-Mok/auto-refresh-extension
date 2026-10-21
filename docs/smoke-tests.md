@@ -65,3 +65,17 @@ Load this folder unpacked in Chrome, start the local fixture, then exercise the 
 **Action:** Open the exact URL in another tab a few seconds later, switch between tabs, Stop one, Resume it, navigate away, then Clear the rule from the other tab.
 
 **Expected:** Badges reflect independent tab deadlines; switching focus does not reset them. Stop, navigation away, Clear and reload-in-progress remove the respective badge. Resume starts a full interval. With the popup closed, foreground ticks continue; sleeping/discarded or throttled pages may update late.
+
+## Store candidate and public pages
+
+**Action:** Run the release builder and inspect the produced ZIP. Load its extracted candidate through Chrome’s Load unpacked command after disabling an older duplicate. Start a 10-second timer on an ordinary page, allow the host, then Stop, Resume and Clear.
+
+**Expected:** The ZIP has manifest.json at its root and only 15 runtime files. The candidate shows real countdown/refresh behavior, Stop/Clear remove its badge, and it contains no tests, docs, machine-local files, store images or credentials. The native permission flow is exercised against the original optional-only manifest.
+
+**Action:** Open Help and Privacy through the popup footer; open the public URLs anonymously on desktop and a narrow/mobile viewport.
+
+**Expected:** Both local bundled and public pages load with styles/icons, no horizontal overflow, descriptive links and readable privacy/permission/removal instructions. The policy describes local exact URLs and settings, normal website reload traffic and no publisher uploads. Public Pages availability does not imply Web Store approval.
+
+**Action:** Inspect the three upload image sizes, then complete the listing/privacy/distribution fields using store-assets/listing.md in a separate new Web Store item.
+
+**Expected:** Icon128×128, promo440×280, screenshot1280×800; genuine popup is visible in the screenshot. Local URL handling is disclosed as Web browsing activity, remote code is No, and the publisher personally confirms certifications. After approval/publication, install from the actual store URL in a clean profile and repeat Start/badge/Stop/Clear.
