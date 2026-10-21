@@ -1,0 +1,10 @@
+node_modules/
+output/
+.lavish/
+*.zip
+.agents/
+.codex/
+.aws/
+.env
+.env.*
+!.env.example
