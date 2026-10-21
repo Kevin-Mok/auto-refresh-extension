@@ -42,3 +42,11 @@ No runtime configuration or normal browser profile was modified. The completed v
 ## Primary API references
 
 Implementation decisions were checked against official Chrome documentation for [permissions](https://developer.chrome.com/docs/extensions/reference/api/permissions), [persistent script registration](https://developer.chrome.com/docs/extensions/reference/api/scripting), [alarms](https://developer.chrome.com/docs/extensions/reference/api/alarms), [session storage](https://developer.chrome.com/docs/extensions/reference/api/storage), and [navigation](https://developer.chrome.com/docs/extensions/reference/api/webNavigation). Site permission is broader than exact-page rule matching; session memory and persistent registration have different restart lifetimes.
+
+## Toolbar countdown follow-up — 2026-10-21
+
+- Defining RED: expected `600` badge absent, badge updater absent, and document update interval absent. Implemented per-document ticks, authenticated worker updates and deadline-derived whole seconds.
+- Fresh full npm test: **25 passed, 0 failed**, exit 0 with localhost access. The sandbox-only run failed in the existing socket fixture; no production failure was found.
+- Real Chromium harness exited 0 using Playwright Core 1.62.1. Observed decreasing total-second badge with popup closed, blank badges after Stop/Clear, Minutes/Seconds above page details, 600-second normalization, fractional-input rejection, real 1/29/30-second reloads, independent tabs, pause persistence, SPA, worker stop/wake and browser restart.
+- Screenshot `output/playwright/popup.png` and full log `output/playwright/browser-current.log` are ignored local evidence. No user browser profile was changed. Icon assets are bundled locally; Chrome’s native badge needs no new permission. See [Chrome action documentation](https://developer.chrome.com/docs/extensions/reference/api/action) for icon and per-tab badge behavior.
+- Native toolbar pinning, permission prompts, live Twitch and sleeping/background throttling remain manual. Large badge values may be clipped; hover displays the full seconds.

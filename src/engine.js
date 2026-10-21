@@ -28,8 +28,21 @@ export class Engine {
     await this.reconcile();
   }
 
+  async badge(id) {
+    const state=this.states[id];
+    const seconds=state?.status==='running' ? Math.max(0,Math.ceil((state.due-this.now())/1000)) : null;
+    const tabId=Number(id);
+    try {
+      await this.api.action.setBadgeBackgroundColor({tabId,color:'#237b43'});
+      await this.api.action.setBadgeTextColor({tabId,color:'#ffffff'});
+      await this.api.action.setBadgeText({tabId,text:seconds===null?'':String(seconds)});
+      await this.api.action.setTitle({tabId,title:seconds===null?'Auto Refresh Cache':`Auto Refresh Cache · ${seconds} seconds until refresh`});
+    } catch { /* Tab may have closed before the toolbar update. */ }
+  }
+
   async save() {
     await this.api.storage.session.set({states:this.states, pauses:this.pauses});
+    for (const id of Object.keys(this.states)) await this.badge(id);
   }
 
   async allowed(url) {
@@ -53,6 +66,7 @@ export class Engine {
     const state = this.states[id];
     delete this.states[id];
     if (!state) return;
+    await this.badge(id);
     await this.api.alarms.clear(alarmName(id, state.token));
     try { await this.message(id, state, {type:'cancel', token:state.token}); } catch { /* Document already gone. */ }
   }

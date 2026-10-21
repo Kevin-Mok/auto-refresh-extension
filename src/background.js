@@ -26,6 +26,11 @@ chrome.runtime.onMessage.addListener((message,sender,respond)=>{
     if (message.type==='clear') action=()=>engine.clear(message.url);
   } else if (sender.tab && sender.frameId===0 && sender.documentId) {
     if (message.type==='ready') action=()=>engine.ready(sender.tab.id,sender.url,sender.documentId);
+    if (message.type==='badge') action=()=>{
+      const state=engine.states[sender.tab.id];
+      if (state?.status!=='running' || state.token!==message.token || state.documentId!==sender.documentId || state.url!==pageKey(sender.url)) return;
+      return engine.badge(sender.tab.id);
+    };
     if (message.type==='due') action=()=>{
       const state=engine.states[sender.tab.id];
       if (state?.documentId!==sender.documentId || state.url!==pageKey(sender.url)) return;

@@ -22,6 +22,9 @@ After editing extension files, use Reload on its card in `chrome://extensions`, 
 
 ## Controls
 
+- **Toolbar icon:** pin the teal refresh icon through Chrome’s Extensions menu. While this tab runs, its green badge shows total seconds remaining (`597` = 9m 57s), even with the popup closed. Hover for the full number; Chrome may clip long badge values. Paused, cleared and loading tabs have no countdown badge. Background/sleep throttling can delay badge updates.
+- **Minutes / Seconds** appear first beneath the popup header, above page details.
+
 - **Start** saves this page's interval and starts this tab. Unsaved pages default to 10 minutes, 0 seconds and remain inactive until Start.
 - Enter whole numbers in **both** Minutes and Seconds. Seconds can exceed 59: `0` minutes and `600` seconds normalize to `10` minutes, `0` seconds. Valid totals are 1–2,147,483,647 seconds. Empty, negative, fractional and zero-total inputs are rejected.
 - **Stop this tab** pauses only this tab for this page. That pause survives page reloads, navigation away/back, and service-worker suspension. Other tabs continue.
@@ -59,7 +62,8 @@ For automated browser checks, provide an installed Playwright module and an exte
 - `src/rules.js`: URL, interval and persisted-rule validation.
 - `src/engine.js`: state transitions and Chrome scheduling boundary.
 - `src/background.js`: queued browser events and authenticated messages.
-- `src/content.js`: document readiness, short timers and final reload guard.
+- `src/content.js`: document readiness, short timers, toolbar countdown ticks and final reload guard.
+- `icons/`: bundled refresh icon sizes and editable SVG source.
 - `popup.html`, `popup.css`, `src/popup.js`: local, accessible dark popup.
 - [Implementation plan](plans/remembered-page-refresh.md), [portable build prompt](prompts/remembered-page-refresh.md).
 

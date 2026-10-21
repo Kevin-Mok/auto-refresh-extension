@@ -2,17 +2,17 @@
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Auto Refresh Cache</title><link rel="stylesheet" href="popup.css"></head>
 <body>
-  <header><span class="brand-mark" aria-hidden="true">↻</span><div><h1>Auto Refresh Cache</h1><p>Remember the page. Refresh on repeat.</p></div></header>
+  <header><span class="brand-mark" aria-hidden="true"><img src="icons/refresh-48.png" width="28" height="28" alt=""></span><div><h1>Auto Refresh Cache</h1><p>Remember the page. Refresh on repeat.</p></div></header>
   <main>
     <section aria-labelledby="page-label">
-      <div class="eyebrow" id="page-label">CURRENT PAGE</div>
-      <p id="page" class="url">Loading page…</p>
-      <div class="timer-row"><div><p id="status" role="status">Checking…</p><p class="small" id="scope">Independent timer for this tab</p></div><output id="countdown" aria-label="Time until next refresh">—</output></div>
       <form id="form" novalidate>
         <div class="inputs"><label>Minutes<input id="minutes" type="text" inputmode="numeric" pattern="[0-9]*" value="10" autocomplete="off" required></label><span aria-hidden="true">:</span><label>Seconds<input id="seconds" type="text" inputmode="numeric" pattern="[0-9]*" value="0" autocomplete="off" required></label></div>
         <p id="error" role="alert" hidden></p>
         <div class="actions"><button id="start" class="primary" type="submit" disabled>Start</button><button id="stop" type="button" hidden>Stop this tab</button></div>
       </form>
+      <div class="eyebrow" id="page-label">CURRENT PAGE</div>
+      <p id="page" class="url">Loading page…</p>
+      <div class="timer-row"><div><p id="status" role="status">Checking…</p><p class="small" id="scope">Independent timer for this tab</p></div><output id="countdown" aria-label="Time until next refresh">—</output></div>
       <button id="clear" class="danger" type="button" hidden>Clear auto refresh</button>
     </section>
     <section class="saved" aria-labelledby="saved-label"><div class="section-title"><h2 id="saved-label">Saved pages</h2><span id="saved-count">0</span></div><p class="small">Remembered across browser restarts.</p><ul id="saved-list"></ul></section>

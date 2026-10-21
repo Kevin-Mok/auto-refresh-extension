@@ -6,9 +6,10 @@ const url = 'https://example.com/page?q=1';
 function setup({ rules = {}, session = {}, denied = false } = {}) {
   let time = 100000;
   const tabs = new Map([1,2].map(id => [id, {id, url, status:'complete', documentId:`doc${id}`} ]));
-  const alarms = new Map(), messages = [], reloads = [];
+  const alarms = new Map(), messages = [], reloads = [], badges = new Map(), titles = new Map();
   const local = {rules}, data = structuredClone(session);
   const api = {
+    action:{setBadgeText:async({tabId,text})=>badges.set(tabId,text),setTitle:async({tabId,title})=>titles.set(tabId,title),setBadgeBackgroundColor:async()=>{},setBadgeTextColor:async()=>{}},
     storage: {
       local: {get: async () => structuredClone(local), set: async x => Object.assign(local, structuredClone(x))},
       session: {get: async () => structuredClone(data), set: async x => Object.assign(data, structuredClone(x))},
@@ -23,7 +24,7 @@ function setup({ rules = {}, session = {}, denied = false } = {}) {
     alarms:{create:async(n,a)=>alarms.set(n,a),clear:async n=>alarms.delete(n),getAll:async()=>[...alarms].map(([name,a])=>({name,scheduledTime:a.when}))},
   };
   const engine = new Engine(api, ()=>time);
-  return {engine,api,tabs,alarms,messages,reloads,local,data,tick:n=>time+=n};
+  return {engine,api,tabs,alarms,messages,reloads,local,data,badges,titles,tick:n=>time+=n};
 }
 async function ready(f,id=1){const tab=f.tabs.get(id);await f.engine.ready(id,tab.url,tab.documentId);}
 
@@ -119,4 +120,25 @@ test('Stop from a stale popup cannot cancel a newly navigated page timer', async
   const token=f.engine.states[1].token;
   await assert.rejects(()=>f.engine.stop(1,url),/changed/i);
   assert.equal(f.engine.states[1].token,token);assert.equal(f.engine.pauses[1],undefined);
+});
+
+
+test('toolbar shows remaining whole seconds independently and clears inactive badges', async()=>{
+  const f=setup({rules:{[url]:600}});await f.engine.init();
+  assert.equal(f.badges.get(1),'600');
+  f.tick(3100);await f.engine.badge(1);
+  assert.equal(f.badges.get(1),'597');
+  assert.match(f.titles.get(1),/597 seconds/);
+  await f.engine.stop(1,url);assert.equal(f.badges.get(1),'');
+  assert.equal(f.badges.get(2),'597');
+  await f.engine.start(1,url,600);assert.equal(f.badges.get(1),'600');
+  f.tabs.get(1).url='https://example.com/away';
+  await f.engine.navigation({tabId:1,url:f.tabs.get(1).url,documentId:'doc1',frameId:0});
+  assert.equal(f.badges.get(1),'');
+  await f.engine.clear(url);assert.equal(f.badges.get(2),'');
+});
+test('toolbar reaches zero when overdue and clears while reloading', async()=>{
+  const f=setup({rules:{[url]:1}});await f.engine.init();f.tick(1500);
+  await f.engine.badge(1);assert.equal(f.badges.get(1),'0');
+  await f.engine.fire(1,f.engine.states[1].token);assert.equal(f.badges.get(1),'');
 });

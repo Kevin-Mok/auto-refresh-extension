@@ -4,11 +4,13 @@ body { margin:0; width:376px; }
 header { display:flex; gap:12px; align-items:center; padding:22px 22px 18px; border-bottom:1px solid #344041; }
 h1 { margin:0; font-size:17px; letter-spacing:-.35px; font-weight:650; }
 header p { margin:5px 0 0; font-size:11px; color:#aebfbd; }
+.brand-mark img { display:block; }
+#form { margin-bottom:18px; }
 .brand-mark { color:#66d8c4; font-size:34px; line-height:1; }
 main { padding:22px; }
 .eyebrow { font-size:10px; font-weight:650; letter-spacing:1.5px; color:#aebfbd; }
 .url { margin:9px 0 20px; line-height:1.6; overflow-wrap:anywhere; max-height:82px; overflow:auto; color:#d4e1df; }
-.timer-row { display:flex; gap:12px; align-items:center; justify-content:space-between; margin-bottom:22px; }
+.timer-row { display:flex; gap:12px; align-items:center; justify-content:space-between; margin-bottom:0; }
 #status { margin:0 0 4px; font-weight:650; }
 #status[data-running="true"] { color:#7ee2cf; }
 .small { font-size:11px; line-height:1.5; color:#aebfbd; margin:0; }

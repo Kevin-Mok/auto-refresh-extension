@@ -55,3 +55,13 @@ Load this folder unpacked in Chrome, start the local fixture, then exercise the 
 **Action:** Open the popup with a long URL and several saved pages. Use Tab/Shift+Tab and Enter to operate all controls; inspect at normal and increased zoom.
 
 **Expected:** Readable URLs wrap, the saved list scrolls, labels and focus rings remain visible, status is textual, no control overlaps/clips and Clear stays reachable.
+
+## Toolbar icon and seconds
+
+**Action:** Reload the unpacked extension in `chrome://extensions`, pin Auto Refresh Cache through the Extensions menu, reload the fixture page, and start 0 minutes / 600 seconds. Close the popup and hover over the icon after a few seconds.
+
+**Expected:** A teal refresh icon replaces the generic letter. The green badge decreases through total seconds (for example 597); the hover title includes the full remaining seconds. Minutes/Seconds appear first below the popup header. Large values may be clipped by Chrome’s badge width.
+
+**Action:** Open the exact URL in another tab a few seconds later, switch between tabs, Stop one, Resume it, navigate away, then Clear the rule from the other tab.
+
+**Expected:** Badges reflect independent tab deadlines; switching focus does not reset them. Stop, navigation away, Clear and reload-in-progress remove the respective badge. Resume starts a full interval. With the popup closed, foreground ticks continue; sleeping/discarded or throttled pages may update late.

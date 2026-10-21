@@ -29,7 +29,7 @@ try {
   });
   progress=setInterval(()=>console.error(`${plain?'':'⏱️ '}Browser checks active · ${Math.floor((Date.now()-started)/1000)}s`),15000);
   await mkdir(fixtureExtension,{recursive:true});
-  for (const file of ['manifest.json','popup.html','popup.css','src']) await cp(join(root,file),join(fixtureExtension,file),{recursive:true});
+  for (const file of ['manifest.json','popup.html','popup.css','src','icons']) await cp(join(root,file),join(fixtureExtension,file),{recursive:true});
   const manifest=JSON.parse(await readFile(join(fixtureExtension,'manifest.json'),'utf8'));
   // Headless Chrome cannot accept its native optional-host dialog; pregrant loopback in this disposable test copy.
   manifest.host_permissions=['http://127.0.0.1/*'];
@@ -45,7 +45,7 @@ try {
   worker.on('console',message=>console.error(message.text()));
   const page=await context.newPage();await page.goto(localUrl+'/page?demo=1');
   let id;
-  const popup=await context.newPage();await popup.goto(`chrome-extension://${extensionId}/popup.html`);
+  let popup=await context.newPage();await popup.goto(`chrome-extension://${extensionId}/popup.html`);
   // A normal extension page has no activeTab grant; prime fixture host permission by the same genuine click API path.
   await popup.evaluate(origin=>{
     const button=document.createElement('button');button.id='grant';button.textContent='Grant test site access';
@@ -65,9 +65,21 @@ try {
   await popup.fill('#minutes','0');await popup.fill('#seconds','600');await popup.click('#start');
   await popup.waitForFunction(()=>document.getElementById('status').textContent==='Running');
   assert.equal(await popup.inputValue('#minutes'),'10');assert.equal(await popup.inputValue('#seconds'),'0');
+  const inputs=await popup.locator('.inputs').boundingBox(), details=await popup.locator('#page-label').boundingBox();
+  assert.ok(inputs.y<details.y,'Minutes/Seconds must precede page details');
+  const badge=()=>worker.evaluate(id=>chrome.action.getBadgeText({tabId:id}),id);
+  assert.ok(Number(await badge())>=598);
+  await popup.close();await page.bringToFront();
+  const initial=Number(await badge());
+  await page.waitForTimeout(2100);
+  assert.ok(Number(await badge())<initial,'badge must count down with popup closed');
+  log('Minutes/Seconds come first; toolbar badge counts down with popup closed');
+  popup=await context.newPage();await page.bringToFront();await popup.goto(`chrome-extension://${extensionId}/popup.html`);
+  await popup.waitForFunction(()=>document.getElementById('status').textContent==='Running');
   await popup.fill('#seconds','1.5');await popup.click('#start');await popup.waitForFunction(()=>!document.getElementById('error').hidden);
   assert.equal((await state()).seconds,600);
   await popup.click('#stop');assert.equal((await state()).paused,true);
+  assert.equal(await badge(),'');
   log('Real popup Start normalizes 600 seconds; fractional input is rejected; Stop pauses this tab');
   await command('start',{seconds:1});
   const served=await page.textContent('#served');
@@ -108,6 +120,7 @@ try {
   await page.waitForFunction(old=>document.getElementById('served').textContent!==old,before,{timeout:45000});
   log('30-second alarm causes an actual reload');
   await command('clear');
+  assert.equal(await badge(),'');
   assert.deepEqual((await state()).rules,{});
   assert.deepEqual(await worker.evaluate(()=>chrome.alarms.getAll()),[]);
   await page.reload();await popup.waitForTimeout(300);assert.equal((await state()).state,null);

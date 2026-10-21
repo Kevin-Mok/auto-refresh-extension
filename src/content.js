@@ -2,15 +2,19 @@
   if (globalThis.__autoRefreshCache) return;
   globalThis.__autoRefreshCache = true;
   let schedule = null;
-  let timer;
+  let timer, badgeTimer;
   const key = () => { const url=new URL(location.href);url.hash='';return url.href; };
-  const cancel = () => { clearTimeout(timer);schedule=null; };
+  const cancel = () => { clearTimeout(timer);clearInterval(badgeTimer);schedule=null; };
   const ready = () => {
     if (document.readyState !== 'complete') return;
     chrome.runtime.sendMessage({type:'ready'}).catch(cancel);
   };
   const armTimer = () => {
-    clearTimeout(timer);
+    clearTimeout(timer);clearInterval(badgeTimer);
+    badgeTimer=setInterval(()=>{
+      if (!schedule || key()!==schedule.url) { cancel();return; }
+      chrome.runtime.sendMessage({type:'badge',token:schedule.token}).catch(cancel);
+    },1000);
     if (!schedule?.short) return;
     timer=setTimeout(() => {
       if (!schedule || key()!==schedule.url) { cancel(); return; }
